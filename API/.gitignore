@@ -1,0 +1,4 @@
+# Configurações e ambientes
+.env
+venv/
+__pycache__/
