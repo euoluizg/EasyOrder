@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from ..services import userAdminServices
-from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
+from ..utils.decorators import roleRequired
 
 bp = Blueprint('userAdminRoutes', __name__)
 
@@ -42,27 +42,22 @@ def loginUserAdmin():
     return jsonify(response), statusCode
 
 @bp.route('/readAll', methods=['GET'])
-@jwt_required()
+@roleRequired('dono')
 def readAllUserAdmin():
     # Rota para buscar todos os usuários admin.
-    # Verifica se o usuário logado é um dono
-    claims = get_jwt()
-    userType = claims.get('type')
-    if userType != 'dono':
-        return jsonify({"error": "Acesso negado"}), 403
 
     response, statusCode = userAdminServices.getAllUserAdmin()
     return jsonify(response), statusCode
 
 @bp.route('/read/<int:idUser>', methods=['GET'])
-@jwt_required()
+@roleRequired('dono', 'gerente')
 def readUserAdminById(idUser):   
     # Rota para buscar um usuário admin pelo ID.
     response, statusCode = userAdminServices.getUserAdminById(idUser)
     return jsonify(response), statusCode
 
 @bp.route('/update/<int:idUser>', methods=['PUT', 'PATCH'])
-@jwt_required()
+@roleRequired('dono', 'gerente')
 def updateUserAdmin(idUser):
     # Rota para atualizar um usuário admin.
     data = request.get_json()
@@ -74,14 +69,9 @@ def updateUserAdmin(idUser):
     return jsonify(response), statusCode
 
 @bp.route('/delete/<int:idUser>', methods=['DELETE'])
-@jwt_required()
+@roleRequired('dono')
 def deleteUserAdmin(idUser):
     # Rota para deletar um usuário admin.
-
-    claims = get_jwt()
-    userType = claims.get('type')
-    if userType != 'dono':
-        return jsonify({"error": "Acesso negado"}), 403
-
+    
     response, statusCode = userAdminServices.deleteUserAdmin(idUser)
     return jsonify(response), statusCode

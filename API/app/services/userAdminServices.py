@@ -198,8 +198,10 @@ def updateUserAdmin(userId, data):
 
     for key, value in data.items():
         if key in allowedFields:
-            fieldsToUpdate.append(f"password = %s")
-            values.append(hashPassword(value))
+            if key == 'password':
+                if value and isinstance(value, str):
+                    fieldsToUpdate.append(f"password = %s")
+                    values.append(hashPassword(value))
         else:
             fieldsToUpdate.append(f"{key} = %s")
             values.append(value)
@@ -208,7 +210,7 @@ def updateUserAdmin(userId, data):
         return {"error": "Nenhum campo válido para atualizar"}, 400
 
     values.append(userId)
-    updateQuery = f"UPDATE usersAdmin SET {', '.join(fieldsToUpdate)} WHERE idUser = %s;"
+    updateQuery = f"UPDATE usersAdmin SET {', '.join(fieldsToUpdate)} WHERE idUser = %s RETURNING idUser, name, email, type;"
 
     try:
         cursor = conn.cursor()

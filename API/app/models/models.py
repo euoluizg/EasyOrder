@@ -5,7 +5,6 @@ db = SQLAlchemy()
 
 userTypeEnum = ENUM('dono', 'gerente', 'garcom', 'cozinha', name='usertype')
 deskConditionEnum = ENUM('livre', 'ocupada', 'reservada', 'manutencao', name='deskcondition')
-stockMovementTypeEnum = ENUM('entrada', 'saida', 'ajuste', name='stockmovementtype')
 orderStatusEnum = ENUM('recebido', 'preparando', 'pronto', 'entregue', 'cancelado', name='orderstatus')
 orderOriginEnum = ENUM('app', 'balcao', 'telefone', name='orderorigin')
 promotionTypeEnum = ENUM('desconto', 'brinde', 'fidelidade', name='promotiontype')
@@ -70,26 +69,6 @@ class MenuItems(db.Model):
     category = db.relationship('Categories', back_populates='menuItems')
     stock = db.relationship('Stock', back_populates='menuItem')
     orderItems = db.relationship('OrderItems', back_populates='menuItem')
-
-class Stock(db.Model):
-    __tablename__ = 'stock'
-    idStock = db.Column(db.Integer, primary_key=True)
-    idItem = db.Column(db.Integer, db.ForeignKey('menuitems.idItem'), nullable=False)
-    amount = db.Column(db.Numeric(10, 2), nullable=False)
-    unit = db.Column(db.String(20), nullable=False)
-    updateDate = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    menuItem = db.relationship('MenuItems', back_populates='stock')
-    movements = db.relationship('StockMovements', back_populates='stockItem')
-
-class StockMovements(db.Model):
-    __tablename__ = 'stockmovements'
-    idMovement = db.Column(db.Integer, primary_key=True)
-    idStock = db.Column(db.Integer, db.ForeignKey('stock.idStock'), nullable=False)
-    type = db.Column(stockMovementTypeEnum, nullable=False)
-    amount = db.Column(db.Numeric(10, 2), nullable=False)
-    description = db.Column(db.Text)
-    timeDate = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
-    stockItem = db.relationship('Stock', back_populates='movements')
 
 class Orders(db.Model):
     __tablename__ = 'orders'
