@@ -1,6 +1,7 @@
 from ..config.db import createConnection
 from ..utils.security import hashPassword, checkPassword
 from flask_jwt_extended import create_access_token
+import psycopg2.errors
 
 def registerUserAdmin(name, password, email, type):
     # service para criar um novo usuário admin.
@@ -209,16 +210,25 @@ def updateUserAdmin(userId, data):
     try:
         cursor = conn.cursor()
         cursor.execute(updateQuery, tuple(values))
+        
+        updateUserAdmin = cursor.fetchone()
+        if updateUserAdmin is None:
+            return {"error": "Usuário não encontrado"}, 404
+
         conn.commit()
         
         print("Usuário atualizado com sucesso.")
         return {"message": "Usuário atualizado com sucesso."}, 200
 
+    except psycopg2.errors.UniqueViolation:
+        conn.rollback()
+        return {"error": f"O email '{data.get('email')}' já está em uso."}, 409
+
     except Exception as e:
         conn.rollback()
         if "unique constraint" in str(e).lower():
-            return {"error": f"O email '{data.get('email')}' já está em uso."}, 400
-        
+            return {"error": f"O email '{data.get('email')}' já está em uso."}, 409 # 409 = Conflict
+
         print(f"Erro ao atualizar usuário: {e}")
         return {"error": str(e)}, 500
     finally:
@@ -247,6 +257,10 @@ def deleteUserAdmin(userId):
             return {"message": f"Usuário deletado com sucesso: {deletedUser[1]}"}, 200
         else:
             return {"error": "Usuário não encontrado"}, 404
+
+    except psycopg2.errors.ForeignKeyViolation:
+        conn.rollback()
+        return {"error": "Não é possível deletar o usuário, pois ele está associado a outros registros."}, 409
 
     except Exception as e:
         conn.rollback()
