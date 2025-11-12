@@ -1,7 +1,6 @@
 from ..config.db import createConnection
 from ..utils.security import hashPassword, checkPassword
 from flask_jwt_extended import create_access_token
-import psycopg2
 
 def registerUserAdmin(name, password, email, type):
     # service para criar um novo usuário admin.
@@ -78,13 +77,8 @@ def loginUserAdmin(email, password):
 
             print("Login bem-sucedido.")
             
-            print(f"DEBUG: O ID do usuário é: {userId}")
-            print(f"DEBUG: O TIPO do ID é: {type(userId)}")
-            
             identity = str(userId) 
-            
-            print(f"DEBUG: A 'identity' é: {identity}")
-            print(f"DEBUG: O TIPO da 'identity' é: {type(identity)}")
+ 
             additionalClaims = {
                 "type": userType
             }
