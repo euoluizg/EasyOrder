@@ -16,8 +16,10 @@ def createApp():
     bcrypt.init_app(app)
 
     from .routes import userAdminRoutes
-
     app.register_blueprint(userAdminRoutes.bp, url_prefix='/admin')
+
+    from .routes import deskRoutes
+    app.register_blueprint(deskRoutes.bp, url_prefix='/desk')
     
 
     print("Aplicação criada com sucesso.")
