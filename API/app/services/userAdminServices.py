@@ -32,6 +32,9 @@ def registerUserAdmin(name, password, email, type):
             "email": newUser[2],
             "type": newUser[3]
             }, 201
+    except psycopg2.errors.UniqueViolation as e:
+        conn.rollback()
+        return {"error": f"O email '{email}' já está registrado."}, 409
     except Exception as e:
         conn.rollback()
         print(f"Erro ao inserir usuário: {e}")
@@ -157,7 +160,7 @@ def getUserAdminById(idUser):
         userData = cursor.fetchone()
         if userData is None:
             return {"error": "Usuário não encontrado"}, 404
-
+        
         user = {
             "idUser": userData[0],
             "name": userData[1],
@@ -166,7 +169,6 @@ def getUserAdminById(idUser):
             "active": userData[4],
             "lastLogin": userData[5]
         }
-            
         return user, 200
 
     except Exception as e:
@@ -197,9 +199,9 @@ def updateUserAdmin(userId, data):
                 if value and isinstance(value, str):
                     fieldsToUpdate.append(f"password = %s")
                     values.append(hashPassword(value))
-        else:
-            fieldsToUpdate.append(f"{key} = %s")
-            values.append(value)
+            else:
+                fieldsToUpdate.append(f"{key} = %s")
+                values.append(value)
 
     if not fieldsToUpdate:
         return {"error": "Nenhum campo válido para atualizar"}, 400
@@ -216,9 +218,16 @@ def updateUserAdmin(userId, data):
             return {"error": "Usuário não encontrado"}, 404
 
         conn.commit()
+
+        user = {
+            "idUser": updateUserAdmin[0],
+            "name": updateUserAdmin[1],
+            "email": updateUserAdmin[2],
+            "type": updateUserAdmin[3],
+        }
         
         print("Usuário atualizado com sucesso.")
-        return {"message": "Usuário atualizado com sucesso."}, 200
+        return user, 200
 
     except psycopg2.errors.UniqueViolation:
         conn.rollback()
@@ -226,9 +235,6 @@ def updateUserAdmin(userId, data):
 
     except Exception as e:
         conn.rollback()
-        if "unique constraint" in str(e).lower():
-            return {"error": f"O email '{data.get('email')}' já está em uso."}, 409 # 409 = Conflict
-
         print(f"Erro ao atualizar usuário: {e}")
         return {"error": str(e)}, 500
     finally:
