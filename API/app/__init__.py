@@ -20,6 +20,9 @@ def createApp():
 
     from .routes import deskRoutes
     app.register_blueprint(deskRoutes.bp, url_prefix='/desk')
+
+    from .routes import clientsRoutes
+    app.register_blueprint(clientsRoutes.bp, url_prefix='/client')
     
 
     print("Aplicação criada com sucesso.")
