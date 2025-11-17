@@ -67,7 +67,7 @@ def loginUserAdmin(email, password):
         if userData is None:
             return {"error": "Usuário não encontrado"}, 404
         
-        userId, name, email, hashedPassword, userType = userData
+        idUser, name, email, hashedPassword, userType = userData
         
         if checkPassword(hashedPassword, password):
 
@@ -76,12 +76,12 @@ def loginUserAdmin(email, password):
                 SET lastLogin = CURRENT_TIMESTAMP
                 WHERE idUser = %s
             """
-            cursor.execute(updateLoginQuery, (userId,))
+            cursor.execute(updateLoginQuery, (idUser,))
             conn.commit()
 
             print("Login bem-sucedido.")
             
-            identity = str(userId) 
+            identity = str(idUser) 
  
             additionalClaims = {
                 "type": userType
@@ -120,9 +120,9 @@ def getAllUserAdmin():
         query = "SELECT idUser, name, email, type, active, lastLogin FROM usersAdmin ORDER BY name;"
         cursor.execute(query)
         
-        users_list = []
+        usersList = []
         for userData in cursor.fetchall():
-            users_list.append({
+            usersList.append({
                 "idUser": userData[0],
                 "name": userData[1],
                 "email": userData[2],
@@ -131,7 +131,7 @@ def getAllUserAdmin():
                 "lastLogin": userData[5]
             })
             
-        return users_list, 200
+        return usersList, 200
 
     except Exception as e:
         print(f"Erro ao buscar usuários: {e}")
@@ -180,7 +180,7 @@ def getUserAdminById(idUser):
         if conn:
             conn.close()
 
-def updateUserAdmin(userId, data):
+def updateUserAdmin(idUser, data):
     # Service para atualizar os dados de um usuário admin.
 
     conn = createConnection()
@@ -206,7 +206,7 @@ def updateUserAdmin(userId, data):
     if not fieldsToUpdate:
         return {"error": "Nenhum campo válido para atualizar"}, 400
 
-    values.append(userId)
+    values.append(idUser)
     updateQuery = f"UPDATE usersAdmin SET {', '.join(fieldsToUpdate)} WHERE idUser = %s RETURNING idUser, name, email, type;"
 
     try:
@@ -243,7 +243,7 @@ def updateUserAdmin(userId, data):
         if conn:
             conn.close()
 
-def deleteUserAdmin(userId):
+def deleteUserAdmin(idUser):
     # Service para deletar um usuário admin.
 
     conn = createConnection()
@@ -254,7 +254,7 @@ def deleteUserAdmin(userId):
     try:
         cursor = conn.cursor()
         deleteQuery = "DELETE FROM usersAdmin WHERE idUser = %s RETURNING idUser, name;"
-        cursor.execute(deleteQuery, (userId,))
+        cursor.execute(deleteQuery, (idUser,))
         deletedUser = cursor.fetchone()
         conn.commit()
 
