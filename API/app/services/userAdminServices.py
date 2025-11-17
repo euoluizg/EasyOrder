@@ -1,7 +1,7 @@
 from ..config.db import createConnection
 from ..utils.security import hashPassword, checkPassword
 from flask_jwt_extended import create_access_token
-import psycopg2
+import psycopg2.errors
 
 def registerUserAdmin(name, password, email, type):
     # service para criar um novo usuário admin.
@@ -32,6 +32,9 @@ def registerUserAdmin(name, password, email, type):
             "email": newUser[2],
             "type": newUser[3]
             }, 201
+    except psycopg2.errors.UniqueViolation as e:
+        conn.rollback()
+        return {"error": f"O email '{email}' já está registrado."}, 409
     except Exception as e:
         conn.rollback()
         print(f"Erro ao inserir usuário: {e}")
@@ -64,7 +67,7 @@ def loginUserAdmin(email, password):
         if userData is None:
             return {"error": "Usuário não encontrado"}, 404
         
-        userId, name, email, hashedPassword, userType = userData
+        idUser, name, email, hashedPassword, userType = userData
         
         if checkPassword(hashedPassword, password):
 
@@ -73,18 +76,13 @@ def loginUserAdmin(email, password):
                 SET lastLogin = CURRENT_TIMESTAMP
                 WHERE idUser = %s
             """
-            cursor.execute(updateLoginQuery, (userId,))
+            cursor.execute(updateLoginQuery, (idUser,))
             conn.commit()
 
             print("Login bem-sucedido.")
             
-            print(f"DEBUG: O ID do usuário é: {userId}")
-            print(f"DEBUG: O TIPO do ID é: {type(userId)}")
-            
-            identity = str(userId) 
-            
-            print(f"DEBUG: A 'identity' é: {identity}")
-            print(f"DEBUG: O TIPO da 'identity' é: {type(identity)}")
+            identity = str(idUser) 
+ 
             additionalClaims = {
                 "type": userType
             }
@@ -122,9 +120,9 @@ def getAllUserAdmin():
         query = "SELECT idUser, name, email, type, active, lastLogin FROM usersAdmin ORDER BY name;"
         cursor.execute(query)
         
-        users_list = []
+        usersList = []
         for userData in cursor.fetchall():
-            users_list.append({
+            usersList.append({
                 "idUser": userData[0],
                 "name": userData[1],
                 "email": userData[2],
@@ -133,7 +131,7 @@ def getAllUserAdmin():
                 "lastLogin": userData[5]
             })
             
-        return users_list, 200
+        return usersList, 200
 
     except Exception as e:
         print(f"Erro ao buscar usuários: {e}")
@@ -162,7 +160,7 @@ def getUserAdminById(idUser):
         userData = cursor.fetchone()
         if userData is None:
             return {"error": "Usuário não encontrado"}, 404
-
+        
         user = {
             "idUser": userData[0],
             "name": userData[1],
@@ -171,7 +169,6 @@ def getUserAdminById(idUser):
             "active": userData[4],
             "lastLogin": userData[5]
         }
-            
         return user, 200
 
     except Exception as e:
@@ -183,7 +180,7 @@ def getUserAdminById(idUser):
         if conn:
             conn.close()
 
-def updateUserAdmin(userId, data):
+def updateUserAdmin(idUser, data):
     # Service para atualizar os dados de um usuário admin.
 
     conn = createConnection()
@@ -202,29 +199,42 @@ def updateUserAdmin(userId, data):
                 if value and isinstance(value, str):
                     fieldsToUpdate.append(f"password = %s")
                     values.append(hashPassword(value))
-        else:
-            fieldsToUpdate.append(f"{key} = %s")
-            values.append(value)
+            else:
+                fieldsToUpdate.append(f"{key} = %s")
+                values.append(value)
 
     if not fieldsToUpdate:
         return {"error": "Nenhum campo válido para atualizar"}, 400
 
-    values.append(userId)
+    values.append(idUser)
     updateQuery = f"UPDATE usersAdmin SET {', '.join(fieldsToUpdate)} WHERE idUser = %s RETURNING idUser, name, email, type;"
 
     try:
         cursor = conn.cursor()
         cursor.execute(updateQuery, tuple(values))
+        
+        updateUserAdmin = cursor.fetchone()
+        if updateUserAdmin is None:
+            return {"error": "Usuário não encontrado"}, 404
+
         conn.commit()
+
+        user = {
+            "idUser": updateUserAdmin[0],
+            "name": updateUserAdmin[1],
+            "email": updateUserAdmin[2],
+            "type": updateUserAdmin[3],
+        }
         
         print("Usuário atualizado com sucesso.")
-        return {"message": "Usuário atualizado com sucesso."}, 200
+        return user, 200
+
+    except psycopg2.errors.UniqueViolation:
+        conn.rollback()
+        return {"error": f"O email '{data.get('email')}' já está em uso."}, 409
 
     except Exception as e:
         conn.rollback()
-        if "unique constraint" in str(e).lower():
-            return {"error": f"O email '{data.get('email')}' já está em uso."}, 400
-        
         print(f"Erro ao atualizar usuário: {e}")
         return {"error": str(e)}, 500
     finally:
@@ -233,7 +243,7 @@ def updateUserAdmin(userId, data):
         if conn:
             conn.close()
 
-def deleteUserAdmin(userId):
+def deleteUserAdmin(idUser):
     # Service para deletar um usuário admin.
 
     conn = createConnection()
@@ -244,7 +254,7 @@ def deleteUserAdmin(userId):
     try:
         cursor = conn.cursor()
         deleteQuery = "DELETE FROM usersAdmin WHERE idUser = %s RETURNING idUser, name;"
-        cursor.execute(deleteQuery, (userId,))
+        cursor.execute(deleteQuery, (idUser,))
         deletedUser = cursor.fetchone()
         conn.commit()
 
@@ -253,6 +263,10 @@ def deleteUserAdmin(userId):
             return {"message": f"Usuário deletado com sucesso: {deletedUser[1]}"}, 200
         else:
             return {"error": "Usuário não encontrado"}, 404
+
+    except psycopg2.errors.ForeignKeyViolation:
+        conn.rollback()
+        return {"error": "Não é possível deletar o usuário, pois ele está associado a outros registros."}, 409
 
     except Exception as e:
         conn.rollback()

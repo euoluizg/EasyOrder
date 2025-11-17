@@ -1,16 +1,22 @@
 import psycopg2
+import os
 
 def createConnection():
+    # Cria uma conexão com o barco de dados (Local ou nuvem).
+
     try:
-        connection = psycopg2.connect(
-            dbname="EasyOrder",
-            user="postgres",
-            password="150322",
-            host="localhost",
-            port="5432"
+        database_url = os.getenv("DATABE_URL")
+        if database_url:
+            conn = psycopg2.connect(database_url)
+        else:
+            conn = psycopg2.connect(
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT")
         )
-        print("Database connection established")
-        return connection
+        return conn
     except Exception as e:
-        print(f"Error connecting to database: {e}")
+        print(f"Erro ao conectar ao DB: {e}")
         return None
