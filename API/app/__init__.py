@@ -26,7 +26,12 @@ def createApp():
 
     from .routes import menuItemsRoutes
     app.register_blueprint(menuItemsRoutes.bp, url_prefix='/menu')
-    
+
+    from .routes import ordersRoutes
+    app.register_blueprint(ordersRoutes.bp, url_prefix='/orders')
+
+    from .routes import orderItemsRoutes
+    app.register_blueprint(orderItemsRoutes.bp, url_prefix='/orderItem')
 
     print("Aplicação criada com sucesso.")
     return app

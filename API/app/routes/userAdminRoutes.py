@@ -6,7 +6,6 @@ from ..utils.decorators import roleRequired
 bp = Blueprint('userAdminRoutes', __name__)
 
 @bp.route('/register', methods=['POST'])
-@roleRequired('dono', 'gerente')
 def registerUserAdmin():
     # Rota para registrar um novo usuário admin.
     data = request.get_json()
@@ -43,7 +42,7 @@ def loginUserAdmin():
     return jsonify(response), statusCode
 
 @bp.route('/readAll', methods=['GET'])
-@roleRequired('dono', 'gerente')
+@roleRequired('dono')
 def readAllUserAdmin():
     # Rota para buscar todos os usuários admin.
 
