@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def createApp():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static')
 
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
@@ -23,6 +23,9 @@ def createApp():
 
     from .routes import clientsRoutes
     app.register_blueprint(clientsRoutes.bp, url_prefix='/client')
+
+    from .routes import menuItemsRoutes
+    app.register_blueprint(menuItemsRoutes.bp, url_prefix='/menu')
     
 
     print("Aplicação criada com sucesso.")
