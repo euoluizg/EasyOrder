@@ -10,8 +10,8 @@ load_dotenv()
 def createApp():
     app = Flask(__name__, static_folder='static')
 
-    CORS(app)
-
+    CORS(app, resources={r"/*": {"origins": "*"}})
+    
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
     jwt = JWTManager(app)
