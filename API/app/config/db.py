@@ -5,7 +5,7 @@ def createConnection():
     # Cria uma conexão com o barco de dados (Local ou nuvem).
 
     try:
-        database_url = os.getenv("DATABE_URL")
+        database_url = os.getenv("DATABASE_URL")
         if database_url:
             conn = psycopg2.connect(database_url)
         else:
