@@ -23,7 +23,7 @@ def createDesk():
     return jsonify(response), statusCode
 
 @bp.route('/readAll', methods=['GET'])
-@roleRequired('dono', 'gerente')
+@roleRequired('dono', 'gerente', 'gacom')
 def readAllDesk():
     # Rota para obter todas as mesas.
 
@@ -31,7 +31,7 @@ def readAllDesk():
     return jsonify(response), statusCode
 
 @bp.route('/update/<int:idDesk>', methods=['PUT', 'PATCH'])
-@roleRequired('dono', 'gerente')
+@roleRequired('dono', 'gerente', 'garcom')
 def updateDesk(idDesk):
     # Rota para atualizar uma mesa.
 
