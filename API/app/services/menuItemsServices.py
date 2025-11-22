@@ -23,10 +23,10 @@ def createMenuItem(data):
         insertQuery = """
             INSERT INTO menuItems (
                 name, description, price, cost, timePreparation,
-                emphasis, active, imagePath, options
+                emphasis, active, imagePath, options, category
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            RETURNING idItem, name, price, active;
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING idItem, name, price, active, category;
         """
 
         cursor.execute(insertQuery, (
@@ -38,7 +38,8 @@ def createMenuItem(data):
             data.get('emphasis', False),
             data.get('active', True),
             data.get('imagePath'),
-            optionsJson
+            optionsJson,
+            data.get('category', 'Geral')
         ))
 
         newItem = cursor.fetchone()
@@ -78,10 +79,10 @@ def getAllItems():
 
         selectQuery = """
             Select idItem, name, description, price, cost, timePreparation, 
-                    emphasis, active, imagePath, options 
+                    emphasis, active, imagePath, options, category
             FROM menuItems 
             WHERE active = TRUE 
-            ORDER BY name;
+            ORDER BY category, name;
         """
 
         cursor.execute(selectQuery)
@@ -89,18 +90,7 @@ def getAllItems():
         itemsList = []
         for itemData in cursor.fetchall():
             itemData['price'] = float(itemData['price'])
-            itemsList.append({
-                "idItem": itemData[0],
-                "name": itemData[1],
-                "description": itemData[2],
-                "price": itemData[3],
-                "cost": itemData[4],
-                "timePreparation": itemData[5],
-                "emphasis": itemData[6],
-                "active": itemData[7],
-                "imagePath": itemData[8],
-                "options": itemData[9]
-            })
+            itemsList.append(itemData)
 
         return itemsList, 200
     
