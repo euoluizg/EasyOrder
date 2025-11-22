@@ -33,7 +33,7 @@ def getItemByID(idItem):
 @bp.route('/update/<int:idItem>', methods=['PUT', 'PATCH'])
 @roleRequired('dono', 'gerente')
 def updateMenuItem(idItem):
-    # Rota para atualizar o usuario cliente
+    # Rota para atualizar o usuario menu
     data = request.get_json()
 
     if not data:
@@ -45,7 +45,7 @@ def updateMenuItem(idItem):
 @bp.route('/delete/<int:idItem>', methods=['DELETE'])
 @roleRequired('dono', 'gerente')
 def deleteMenuItem(idItem):
-    # Rota para desativar um cliente.
+    # Rota para desativar um menu.
 
     response, statusCode = menuItemsServices.deleteMenuItem(idItem)
     return jsonify(response), statusCode
