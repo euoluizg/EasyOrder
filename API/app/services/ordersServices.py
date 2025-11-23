@@ -111,6 +111,7 @@ def getAllActiveOrders():
             SELECT o.idOrder, o.status, o.total, o.timeDate, d.deskNumber
             FROM orders o
             LEFT JOIN desks d ON o.idDesk = d.idDesk
+            LEFT JOIN clients c ON o.idClient = c.idClient
             WHERE o.status NOT IN ('entregue', 'cancelado')
             ORDER BY o.timeDate;
         """
