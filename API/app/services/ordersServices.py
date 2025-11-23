@@ -173,7 +173,7 @@ def getOrderDetails(idOrder, idUser, userType):
             item['unitprice'] = float(item['unitprice'])
             itemsList.append(item)
 
-            orderDetails['total'] = float(orderDetails['total'])
+        orderDetails['total'] = float(orderDetails['total'])
         orderDetails['items'] = itemsList
         
         return orderDetails, 200
