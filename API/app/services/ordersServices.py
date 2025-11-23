@@ -24,7 +24,7 @@ def createNewOrder(idClient, idDesk, itemsList, observation=None, origin='app'):
         queryPrices = "SELECT idItem, price FROM menuItems WHERE idItem = ANY(%s) AND active = TRUE;"
         cursor.execute(queryPrices, (idsItem,))
 
-        priceMap = {row['idItem']: float(row['price']) for row in cursor.fetchall()}
+        priceMap = {row['iditem']: float(row['price']) for row in cursor.fetchall()}
         
         processedItems = []
 
@@ -55,7 +55,7 @@ def createNewOrder(idClient, idDesk, itemsList, observation=None, origin='app'):
             cursor.execute(queryOrder, (idClient, idDesk, totalPrice, observation, origin))
 
             newOrder = cursor.fetchone()
-            newOrderId = newOrder['idOrder']
+            newOrderId = newOrder['idorder']
 
             queryItems = """
             INSERT INTO orderItems (idOrder, idItem, amount, unitPrice, custom, observation)
