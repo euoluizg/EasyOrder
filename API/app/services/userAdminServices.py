@@ -90,8 +90,14 @@ def loginUserAdmin(email, password):
             accessToken = create_access_token(identity=identity, additional_claims=additionalClaims)
             return {
                 "message": f"Login bem-sucedido, bem-vindo {name}!",
-                "access_token": accessToken
-                }, 200
+                "access_token": accessToken,
+
+                "user": {
+                    "name": name,
+                    "email": email,
+                    "type": userType
+                }
+            }, 200
         else:
             return {"error": "Senha incorreta"}, 401 # 401 = Unauthorized
         

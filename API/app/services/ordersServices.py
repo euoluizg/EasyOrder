@@ -108,22 +108,34 @@ def getAllActiveOrders():
 
         # Busca pedidos que NÃO estão finalizados
         query = """
-            SELECT o.idOrder, o.status, o.total, o.timeDate, d.deskNumber
+            SELECT 
+                o.idOrder as "idOrder",
+                o.status as "status",
+                o.total as "total",
+                o.timeDate as "timeDate",
+                o.observation as "observation",
+                d.deskNumber as "deskNumber", 
+                c.name as "clientName"
             FROM orders o
             LEFT JOIN desks d ON o.idDesk = d.idDesk
             LEFT JOIN clients c ON o.idClient = c.idClient
             WHERE o.status NOT IN ('entregue', 'cancelado')
-            ORDER BY o.timeDate;
+            ORDER BY o.timeDate ASC;
         """
 
         cursor.execute(query)
 
-        orders = []
-        for row in cursor.fetchall():
-            row['total'] = float(row['total'])
-            orders.append(row)
+        orders = cursor.fetchall()
+        
+        for order in orders:
+            order['total'] = float(order['total'])
+            if order['timeDate']:
+                order['timeDate'] = order['timeDate'].isoformat()
 
+            if order['clientName'] is None:
+                order['clientName'] = "Cliente Balcão"
         return orders, 200
+
     except Exception as e:
         print(f"Erro ao buscar pedidos ativos: {e}")
         return {"error": str(e)}, 500
