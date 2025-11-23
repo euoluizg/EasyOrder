@@ -89,8 +89,9 @@ def getAllItems():
 
         itemsList = []
         for itemData in cursor.fetchall():
-            itemData['price'] = float(itemData['price'])
-            itemsList.append(itemData)
+            item = dict(itemData)
+            item['price'] = float(item['price'])
+            itemsList.append(item)
 
         return itemsList, 200
     
@@ -183,7 +184,7 @@ def updateMenuItem(idItem, data):
     
     values.append(idItem)
 
-    updateQuery = f"UPDATE  menuitems SET {', '.join(fieldsToUpdate)} WHERE idItem = %s RETURNING idItem, name, price, active;"
+    updateQuery = f"UPDATE  menuItems SET {', '.join(fieldsToUpdate)} WHERE idItem = %s RETURNING idItem, name, price, active;"
 
     try:
         cursor = conn.cursor()
