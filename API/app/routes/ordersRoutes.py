@@ -6,13 +6,9 @@ from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 bp = Blueprint('ordersRoutes', __name__)
 
 @bp.route('/create', methods=['POST'])
-@jwt_required() 
+@roleRequired('client') 
 def createOrderRoute():
-    # Rota para um CLIENTE criar um novo pedido.
-    claims = get_jwt()
-    if claims.get('type') != 'client':
-        return jsonify({"error": "Apenas clientes podem criar pedidos."}), 403
-    
+    # Rota para um CLIENTE criar um novo pedido.    
     clientId = get_jwt_identity() 
     
     data = request.get_json()
