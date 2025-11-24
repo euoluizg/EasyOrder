@@ -104,7 +104,7 @@ def getAllActiveOrders():
     cursor = None
 
     try:
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         # Busca pedidos que NÃO estão finalizados
         query = """
