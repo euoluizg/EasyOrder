@@ -120,7 +120,7 @@ def getAllActiveOrders():
             LEFT JOIN desks d ON o.idDesk = d.idDesk
             LEFT JOIN clients c ON o.idClient = c.idClient
             WHERE o.status NOT IN ('entregue', 'cancelado')
-            ORDER BY o.timeDate ASC;
+            ORDER BY o.timeDate DESC;
         """
 
         cursor.execute(query)
