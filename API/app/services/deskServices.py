@@ -180,3 +180,25 @@ def deleteDesk(deskId):
             cursor.close()
         if conn:
             conn.close()
+
+def getDeskInfo(idDesk):
+    # Service: Busca informações básicas da mesa (Público).
+    conn = createConnection()
+    if conn is None: return {"error": "DB failed"}, 500
+    cursor = None
+    try:
+        cursor = conn.cursor()
+        # Busca apenas o número da mesa
+        query = "SELECT deskNumber FROM desks WHERE idDesk = %s;"
+        cursor.execute(query, (idDesk,))
+        result = cursor.fetchone()
+        
+        if result is None:
+            return {"error": "Mesa não encontrada"}, 404
+            
+        return {"deskNumber": result[0]}, 200
+    except Exception as e:
+        return {"error": str(e)}, 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
