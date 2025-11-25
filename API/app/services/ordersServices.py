@@ -145,20 +145,17 @@ def getAllActiveOrders():
         if conn: 
             conn.close()
 
-def getOrderDetails(idOrder):
-    # Service para buscar os detalhes de 1 pedido (com seus itens.)
-
+def getOrderItemsByIdOrder(idOrder):
+    # Service: Busca APENAS os itens para o Dialog da Cozinha.
     conn = createConnection()
-    if conn is None:
-        return {"error": "Database connection failed."}, 500
-    
+    if conn is None: 
+        return {"error": "DB failed"}, 500
     cursor = None
-
     try:
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        # Usamos RealDictCursor para garantir nomes de colunas corretos
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
-        # Busca os itens desse pedido
-        queryItems = """
+        query = """
             SELECT 
                 oi.amount, 
                 oi.observation, 
@@ -169,15 +166,13 @@ def getOrderDetails(idOrder):
             JOIN menuItems m ON oi.idItem = m.idItem
             WHERE oi.idOrder = %s;
         """
-        cursor.execute(queryItems, (idOrder,))
+        cursor.execute(query, (idOrder,))
         items = cursor.fetchall()
         
         for item in items:
-            item['unitPrice'] = float(items['unitPrice'])
-
-        
+            item['unitPrice'] = float(item['unitPrice'])
+            
         return items, 200
-
     except Exception as e:
         print(f"Erro ao buscar detalhes do pedido: {e}")
         return {"error": str(e)}, 500
