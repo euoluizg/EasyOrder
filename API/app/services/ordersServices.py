@@ -250,10 +250,8 @@ def getClientOrders(clientId):
         if conn: conn.close()
 
 def getOrderDetails(idOrder, idUser, userType):
-    # Service: Busca os detalhes completos de um pedido (Cabeçalho + Itens).
-    # Inclui verificação de segurança para garantir que um cliente só veja o SEU pedido.
-    
-    
+    # Service: Detalhes do pedido com JOIN na Mesa.
+
     conn = createConnection()
     if conn is None: return {"error": "Database connection failed."}, 500
     
@@ -262,27 +260,31 @@ def getOrderDetails(idOrder, idUser, userType):
     try:
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        # 1. Busca o pedido principal
-        queryOrder = "SELECT * FROM orders WHERE idOrder = %s;"
+        queryOrder = """
+            SELECT o.*, d.deskNumber 
+            FROM orders o
+            LEFT JOIN desks d ON o.idDesk = d.idDesk
+            WHERE o.idOrder = %s;
+        """
         cursor.execute(queryOrder, (idOrder,))
         orderRaw = cursor.fetchone()
 
         if orderRaw is None:
             return {"error": "Pedido não encontrado."}, 404
         
-        # Converte para dicionário para podermos adicionar campos
+        # Converte para dict
         orderDetails = dict(orderRaw)
         
-        # Permite se for Staff (Admin/Cozinha)
-        isAdminStaff = userType in ['dono', 'gerente', 'garcom', 'cozinha']
+        if 'desknumber' in orderDetails:
+            orderDetails['deskNumber'] = orderDetails['desknumber']
         
-        # Permite se for o Dono do Pedido (Cliente)
+        # Segurança (Mantida igual)
+        isAdminStaff = userType in ['dono', 'gerente', 'garcom', 'cozinha']
         isOwner = (userType == 'client' and orderDetails['idclient'] == int(idUser))
 
         if not (isAdminStaff or isOwner):
             return {"error": "Acesso negado a este pedido"}, 403
         
-        # 2. Busca os itens desse pedido
         queryItems = """
             SELECT oi.idOrderItem, oi.amount, oi.unitPrice, oi.custom, oi.observation, mi.name 
             FROM orderItems oi
@@ -294,18 +296,15 @@ def getOrderDetails(idOrder, idUser, userType):
         itemsList = []
         for item in cursor.fetchall():
             i = dict(item)
-            # Converte decimal para float
-            i['unitPrice'] = float(i['unitprice']) if 'unitprice' in i else float(i['unitPrice'])
+            i['unitPrice'] = float(i['unitprice'])
             itemsList.append(i)
 
-        # 3. Formata a resposta final
         orderDetails['total'] = float(orderDetails['total'])
+        orderDetails['items'] = itemsList
         
-        # Converte datas para string ISO (para o JSON não quebrar)
+        # Tratamento de Data
         if orderDetails.get('timedate'):
              orderDetails['timeDate'] = orderDetails['timedate'].isoformat()
-             
-        orderDetails['items'] = itemsList
         
         return orderDetails, 200
 
