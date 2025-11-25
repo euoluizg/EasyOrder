@@ -1,0 +1,45 @@
+<div class="mobile-container">
+  <div class="auth-header">
+    <button mat-icon-button (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+    <span>Identificação</span>
+    <div style="width: 40px"></div>
+  </div>
+
+  <div class="auth-content">
+    <h2 class="title">Para finalizar,<br>quem é você?</h2>
+
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+      <mat-tab label="JÁ SOU CLIENTE">
+        <div class="form-body">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email ou Celular</mat-label>
+            <input matInput [(ngModel)]="loginData.id">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Senha</mat-label>
+            <input matInput type="password" [(ngModel)]="loginData.pass">
+          </mat-form-field>
+          <button mat-raised-button color="primary" class="action-btn" (click)="doLogin()">ENTRAR E PEDIR</button>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="CRIAR CONTA">
+        <div class="form-body">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome</mat-label>
+            <input matInput [(ngModel)]="regData.name">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Celular ou Email</mat-label>
+            <input matInput [(ngModel)]="regData.phone" type="tel">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Crie uma Senha</mat-label>
+            <input matInput type="password" [(ngModel)]="regData.pass">
+          </mat-form-field>
+          <button mat-raised-button color="accent" class="action-btn" (click)="doRegister()">CADASTRAR E PEDIR</button>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

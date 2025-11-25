@@ -1,0 +1,73 @@
+<div class="header">
+  <h1>Gestão do Cardápio</h1>
+  <button mat-raised-button color="accent" (click)="openDialog()">
+    <mat-icon>add</mat-icon> Novo Prato
+  </button>
+</div>
+
+<div class="table-container mat-elevation-z2">
+  <table mat-table [dataSource]="items">
+
+    <ng-container matColumnDef="image">
+      <th mat-header-cell *matHeaderCellDef> Foto </th>
+      <td mat-cell *matCellDef="let item">
+        <img [src]="item.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'"
+          class="item-thumb"
+          onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'"
+          alt="Prato">
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Detalhes </th>
+      <td mat-cell *matCellDef="let item">
+        <div class="info-cell">
+          <span class="name">{{ item.name }}</span>
+
+          <div class="badges">
+            <span class="category-badge">{{ item.category || 'Geral' }}</span>
+            @if (item.emphasis) {
+              <span class="highlight-badge">🔥 Destaque</span>
+            }
+          </div>
+
+          <small class="desc">{{ item.description }}</small>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef> Venda </th>
+      <td mat-cell *matCellDef="let item" class="price-cell">
+        R$ {{ item.price | number:'1.2-2' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="active">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let item">
+        <mat-slide-toggle
+          [checked]="item.active"
+          (change)="toggleStatus(item)"
+          color="primary"
+          matTooltip="Ativar/Pausar Vendas">
+        </mat-slide-toggle>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let item" class="actions-cell">
+        <button mat-icon-button color="primary" (click)="openDialog(item)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteItem(item.idItem!)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

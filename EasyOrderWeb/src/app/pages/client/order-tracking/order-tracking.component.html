@@ -1,0 +1,88 @@
+@if (order) {
+  <div class="mobile-container">
+    <div class="status-header" [ngClass]="getStatusClass(order.status)">
+      <div class="icon-wrapper pulse">
+        @if (order.status === 'recebido') {
+          <mat-icon>restaurant</mat-icon>
+        }
+        @if (order.status === 'preparando') {
+          <mat-icon>soup_kitchen</mat-icon>
+        }
+        @if (order.status === 'pronto') {
+          <mat-icon>check_circle</mat-icon>
+        }
+        @if (order.status === 'entregue') {
+          <mat-icon>thumb_up</mat-icon>
+        }
+      </div>
+      <h1>{{ order.status | uppercase }}</h1>
+      @if (order.status === 'recebido') {
+        <p class="status-desc">Aguardando a cozinha aceitar...</p>
+      }
+      @if (order.status === 'preparando') {
+        <p class="status-desc">Seu pedido está no fogo! 🔥</p>
+      }
+      @if (order.status === 'pronto') {
+        <p class="status-desc">Pode retirar no balcão! 😋</p>
+      }
+      <div class="progress-container">
+        <mat-progress-bar
+          mode="determinate"
+          [value]="getProgressValue(order.status)"
+          class="custom-progress">
+        </mat-progress-bar>
+      </div>
+    </div>
+    <div class="content">
+      <mat-card class="receipt-card">
+        <mat-card-header>
+          <mat-card-title>Resumo do Pedido</mat-card-title>
+          <mat-card-subtitle>
+            Pedido #{{ order.idOrder || order.idorder }} • Mesa {{ order.deskNumber || order.desknumber || order.idDesk || '?' }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+            @for (item of items; track item) {
+              <mat-list-item class="receipt-item">
+                <span matListItemTitle class="item-title">
+                  <span class="qty">{{ item.amount }}x</span> {{ item.name }}
+                </span>
+                @if (item.observation) {
+                  <span matListItemLine class="obs">
+                    ⚠️ {{ item.observation }}
+                  </span>
+                }
+                @if (item.custom) {
+                  <span matListItemLine class="custom">
+                    @for (k of getCustomKeys(item.custom); track k) {
+                      <span>+ {{ item.custom[k] }} </span>
+                    }
+                  </span>
+                }
+                <span matListItemMeta class="price">R$ {{ item.unitPrice * item.amount | number:'1.2-2' }}</span>
+              </mat-list-item>
+            }
+          </mat-list>
+          <mat-divider></mat-divider>
+          <div class="total-row">
+            <span>Total a Pagar</span>
+            <span class="total-value">R$ {{ order.total | number:'1.2-2' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="bottom-action">
+      <button mat-flat-button color="primary" class="btn-large" routerLink="/menu/{{order.idDesk || order.desknumber || 1}}">
+        FAZER NOVO PEDIDO
+      </button>
+    </div>
+  </div>
+}
+
+@if (!order) {
+  <div class="loading-screen">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Buscando seu pedido...</p>
+  </div>
+}

@@ -1,0 +1,26 @@
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 24px;
+  
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-right: 20px;
+  }
+
+  h1 { margin: 0; font-size: 2rem; color: #333; }
+  h3 { margin: 0; color: #666; font-weight: 500; font-size: 1rem; }
+}
+
+.revenue mat-icon { color: #4caf50; }
+.orders mat-icon { color: #2196f3; }

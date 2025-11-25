@@ -1,0 +1,108 @@
+.mobile-layout {
+  background-color: #fff;
+  min-height: 100vh;
+  padding-bottom: 80px; /* Espaço para a barra do carrinho */
+  max-width: 600px; /* Centraliza no PC */
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.spacer { flex: 1; }
+
+.menu-content { padding: 16px; }
+
+.welcome-banner {
+  margin-bottom: 24px;
+  h1 { margin: 0; font-size: 1.5rem; color: #333; }
+  p { margin: 4px 0 0; color: #888; }
+}
+
+.category-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 24px 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-left: 4px solid #ff4081;
+  padding-left: 8px;
+}
+
+/* Item Card */
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  
+  &:active { background-color: #fafafa; }
+}
+
+.text-content {
+  flex: 1;
+  padding-right: 12px;
+  display: flex;
+  flex-direction: column;
+
+  .item-name { margin: 0 0 4px; font-size: 1rem; font-weight: 500; color: #222; }
+  .item-desc { 
+    margin: 0 0 8px; font-size: 0.85rem; color: #777; line-height: 1.4; 
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .item-price { font-weight: 700; color: #2e7d32; font-size: 0.95rem; }
+}
+
+.image-content {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+/* Barra de Carrinho */
+.cart-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-width: 600px; margin: 0 auto; /* Alinha com o layout */
+  
+  background: #333;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+  z-index: 200;
+
+  .cart-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .badge {
+      background: #ff4081;
+      color: white;
+      font-weight: bold;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+    
+    .total-label { font-size: 1.1rem; }
+  }
+}

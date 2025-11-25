@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>
+  Pedido #{{ data.order.idOrder }}
+  <small style="display:block; font-size: 0.9rem; color: #666; margin-top: 4px;">
+    Mesa {{ data.order.deskNumber }}
+  </small>
+</h2>
+
+<mat-dialog-content>
+
+  @if (loading) {
+    <div class="loading-state">
+      <p>Carregando itens...</p>
+    </div>
+  }
+
+  @if (!loading) {
+    <mat-list>
+      @for (item of items; track item) {
+        <div>
+          <mat-list-item class="item-row">
+            <mat-icon matListItemIcon>restaurant</mat-icon>
+            <div matListItemTitle class="item-title">
+              <span class="amount">{{ item.amount }}x</span>
+              <span class="name">{{ item.name }}</span>
+            </div>
+            @if (item.observation) {
+              <div matListItemLine class="item-obs">
+                ⚠️ {{ item.observation }}
+              </div>
+            }
+            @if (item.custom) {
+              <div matListItemLine class="item-custom">
+                @for (key of getCustomKeys(item.custom); track key) {
+                  <span>
+                    • {{ key }}: {{ item.custom[key] }}
+                  </span>
+                }
+              </div>
+            }
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </div>
+      }
+    </mat-list>
+  }
+
+  @if (!loading && items.length === 0) {
+    <div style="text-align:center; padding: 20px;">
+      Nenhum item encontrado neste pedido.
+    </div>
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" mat-dialog-close>Fechar</button>
+</mat-dialog-actions>

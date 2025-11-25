@@ -1,0 +1,22 @@
+<div class="header" style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+  <h1 style="margin:0;">Visão Geral</h1>
+  <button mat-icon-button (click)="loadStats()"><mat-icon>refresh</mat-icon></button>
+</div>
+
+<div class="dashboard-grid">
+  <mat-card class="stat-card revenue">
+    <mat-icon>attach_money</mat-icon>
+    <div class="content">
+      <h3>Faturamento Total</h3>
+      <h1>{{ stats.totalRevenue | currency:'BRL' }}</h1>
+    </div>
+  </mat-card>
+
+  <mat-card class="stat-card orders">
+    <mat-icon>receipt_long</mat-icon>
+    <div class="content">
+      <h3>Total de Pedidos</h3>
+      <h1>{{ stats.totalOrders }}</h1>
+    </div>
+  </mat-card>
+</div>
