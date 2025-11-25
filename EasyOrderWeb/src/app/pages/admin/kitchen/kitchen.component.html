@@ -1,0 +1,52 @@
+<div class="header">
+  <h1>Pedidos na Cozinha</h1>
+  <button mat-icon-button (click)="load()"><mat-icon>refresh</mat-icon></button>
+</div>
+
+<div class="orders-grid">
+  <mat-card *ngFor="let order of orders" [class]="'order-card status-' + order.status">
+    
+    <div class="card-header-row">
+      
+      <div class="left-section">
+        <div class="desk-avatar">{{ order.deskNumber }}</div>
+        
+        <div class="text-info">
+          <span class="mesa-title">Mesa {{ order.deskNumber }}</span>
+          
+          <span class="cliente-name">{{ order.clientName }}</span>
+
+          <span class="order-id">#{{ order.idOrder }}</span>
+        </div>
+      </div>
+
+      <div class="status-section">
+        <mat-chip-option [color]="getStatusColor(order.status)" selected>
+          {{ order.status | uppercase }}
+        </mat-chip-option>
+      </div>
+
+    </div>
+
+    <mat-card-content>
+      <p *ngIf="order.observation" class="obs-alert">
+        ⚠️ {{ order.observation }}
+      </p>
+
+      <p class="total">Total: R$ {{ order.total | number:'1.2-2' }}</p>
+
+      <button mat-stroked-button color="primary" class="full-width-btn" (click)="viewItems(order)">
+        <mat-icon>list</mat-icon> VER ITENS
+      </button>
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-actions align="end">
+       <button mat-button color="primary" *ngIf="order.status === 'recebido'" (click)="updateStatus(order.idOrder, 'preparando')">INICIAR</button>
+       <button mat-raised-button color="accent" *ngIf="order.status === 'preparando'" (click)="updateStatus(order.idOrder, 'pronto')">PRONTO</button>
+       <button mat-stroked-button color="warn" *ngIf="order.status === 'pronto'" (click)="updateStatus(order.idOrder, 'entregue')">ENTREGAR</button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

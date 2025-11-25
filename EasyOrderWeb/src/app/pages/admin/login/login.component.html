@@ -1,0 +1,26 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>EasyOrder 🍔</mat-card-title>
+      <mat-card-subtitle>Acesso Administrativo</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form (submit)="login()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput [(ngModel)]="email" name="email" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput type="password" [(ngModel)]="password" name="password" required>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading" class="full-width action-btn">
+          {{ isLoading ? 'ENTRANDO...' : 'ACESSAR SISTEMA' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

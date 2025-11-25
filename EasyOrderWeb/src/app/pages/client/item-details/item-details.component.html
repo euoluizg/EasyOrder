@@ -1,0 +1,44 @@
+<div class="mobile-dialog-container">
+  
+  <div class="hero-image" [style.backgroundImage]="'url(' + (data.imagePath || 'assets/placeholder.png') + ')'">
+    <button mat-icon-button class="close-btn" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="content-body">
+    <div class="header-info">
+      <h2>{{ data.name }}</h2>
+      <span class="price">R$ {{ data.price | number:'1.2-2' }}</span>
+    </div>
+    
+    <p class="description">{{ data.description }}</p>
+
+    <mat-divider></mat-divider>
+
+    <div class="obs-section">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Alguma observação?</mat-label>
+        <textarea matInput [(ngModel)]="observation" placeholder="Ex: Sem cebola, ponto bem passado..." rows="3"></textarea>
+        <mat-icon matSuffix>edit_note</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="action-footer">
+    <div class="counter">
+      <button mat-icon-button (click)="decrement()" [disabled]="amount <= 1">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <span class="count-value">{{ amount }}</span>
+      <button mat-icon-button (click)="increment()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <button mat-raised-button color="primary" class="add-btn" (click)="addToCart()">
+      <span>Adicionar</span>
+      <span>R$ {{ getTotal() | number:'1.2-2' }}</span>
+    </button>
+  </div>
+</div>
