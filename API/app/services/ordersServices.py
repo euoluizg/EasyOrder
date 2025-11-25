@@ -208,3 +208,43 @@ def updateOrderStatus(orderId, newStatus):
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
+
+def getClientOrders(clientId):
+    """Service: Busca o histórico de pedidos de um cliente específico."""
+    conn = createConnection()
+    if conn is None: return {"error": "DB failed"}, 500
+    
+    cursor = None
+    try:
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Busca pedidos do cliente ordenados pelo mais recente
+        query = """
+            SELECT 
+                o.idOrder as "idOrder",
+                o.status as "status",
+                o.total as "total",
+                o.timeDate as "timeDate",
+                d.deskNumber as "deskNumber"
+            FROM orders o
+            LEFT JOIN desks d ON o.idDesk = d.idDesk
+            WHERE o.idClient = %s
+            ORDER BY o.timeDate DESC;
+        """
+        cursor.execute(query, (clientId,))
+        orders = cursor.fetchall()
+        
+        for order in orders:
+            order['total'] = float(order['total'])
+            if order['timeDate']:
+                order['timeDate'] = order['timeDate'].isoformat()
+            if not order['deskNumber']:
+                order['deskNumber'] = "?"
+                
+        return orders, 200
+    except Exception as e:
+        print(f"Erro ao buscar histórico: {e}")
+        return [], 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
