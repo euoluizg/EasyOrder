@@ -89,9 +89,8 @@ export class CreateDeskDialog { data: any = {}; }
 export class QrViewDialog { 
   data = inject(MAT_DIALOG_DATA);
 
-  // URL base do seu site (Mude para a URL do Render quando publicar o front)
-  baseUrl = 'http://localhost:4200'; 
-  // baseUrl = 'https://easy-order-web.onrender.com'; // Exemplo de Produção
+  // URL base do seu site 
+  baseUrl = 'https://euoluizg.github.io/EasyOrder'; 
 
   getQrData() {
     // Se a mesa tiver um UID (criado pelo backend), usa ele. 
@@ -132,7 +131,6 @@ export class DeskManagerComponent implements OnInit {
   ngOnInit() { this.load(); }
 
 
-  // --- AQUI ESTÁ A VERSÃO ATUALIZADA COM DEBUG ---
   load() {
     this.api.getDesks().subscribe({
       next: (data) => {
