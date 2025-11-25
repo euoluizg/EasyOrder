@@ -5,52 +5,48 @@
   </button>
 </div>
 
-<div class="grid" *ngIf="desks.length > 0; else emptyState">
-  
-  <mat-card *ngFor="let desk of desks" [class]="'status-' + desk.condition">
-    <mat-card-header>
-      <mat-card-title>Mesa {{ desk.deskNumber }}</mat-card-title>
-      
-      <mat-card-subtitle>{{ desk.condition | uppercase }}</mat-card-subtitle>
-    </mat-card-header>
-    
-    <mat-card-content>
-      <p><strong>Capacidade:</strong> {{ desk.capacity }} pessoas</p>
-      <small style="color: #999">ID: {{ desk.idDesk }}</small>
-    </mat-card-content>
-
-    <mat-card-actions align="end">
-      <button mat-button [matMenuTriggerFor]="statusMenu">
-        STATUS
-      </button>
-      <mat-menu #statusMenu="matMenu">
-        <button mat-menu-item (click)="updateStatus(desk.idDesk, 'livre')">
-          <mat-icon style="color: green">circle</mat-icon> Livre
-        </button>
-        <button mat-menu-item (click)="updateStatus(desk.idDesk, 'ocupada')">
-          <mat-icon style="color: red">circle</mat-icon> Ocupada
-        </button>
-        <button mat-menu-item (click)="updateStatus(desk.idDesk, 'manutencao')">
-          <mat-icon style="color: orange">build</mat-icon> Manutenção
-        </button>
-      </mat-menu>
-
-      <button mat-icon-button color="primary" (click)="showQr(desk)" matTooltip="Ver QR Code">
-        <mat-icon>qr_code</mat-icon>
-      </button>
-      
-      <button mat-icon-button color="warn" (click)="deleteDesk(desk.idDesk)" matTooltip="Deletar Mesa">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </mat-card-actions>
-  </mat-card>
-
-</div>
-
-<ng-template #emptyState>
+@if (desks.length > 0) {
+  <div class="grid">
+    @for (desk of desks; track desk) {
+      <mat-card [class]="'status-' + desk.condition">
+        <mat-card-header>
+          <mat-card-title>Mesa {{ desk.deskNumber }}</mat-card-title>
+          <mat-card-subtitle>{{ desk.condition | uppercase }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>Capacidade:</strong> {{ desk.capacity }} pessoas</p>
+          <small style="color: #999">ID: {{ desk.idDesk }}</small>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button [matMenuTriggerFor]="statusMenu">
+            STATUS
+          </button>
+          <mat-menu #statusMenu="matMenu">
+            <button mat-menu-item (click)="updateStatus(desk.idDesk, 'livre')">
+              <mat-icon style="color: green">circle</mat-icon> Livre
+            </button>
+            <button mat-menu-item (click)="updateStatus(desk.idDesk, 'ocupada')">
+              <mat-icon style="color: red">circle</mat-icon> Ocupada
+            </button>
+            <button mat-menu-item (click)="updateStatus(desk.idDesk, 'manutencao')">
+              <mat-icon style="color: orange">build</mat-icon> Manutenção
+            </button>
+          </mat-menu>
+          <button mat-icon-button color="primary" (click)="showQr(desk)" matTooltip="Ver QR Code">
+            <mat-icon>qr_code</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteDesk(desk.idDesk)" matTooltip="Deletar Mesa">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+} @else {
   <div class="empty-container">
     <mat-icon class="empty-icon">table_restaurant</mat-icon>
     <h3>Nenhuma mesa encontrada.</h3>
     <p>Clique em "Nova Mesa" para começar o seu salão.</p>
   </div>
-</ng-template>
+}
+

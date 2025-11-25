@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-// Verifique se o nome do arquivo é 'environment.ts' ou 'environments.ts' na sua pasta
 import { environment } from '../../../../environments/environments';
 import { CartItem, MenuItem } from '../../models/interfaces';
 

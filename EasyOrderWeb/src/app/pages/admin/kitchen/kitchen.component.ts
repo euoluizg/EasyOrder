@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -8,39 +8,51 @@ import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/d
 import { MatDividerModule } from '@angular/material/divider'; // <--- CORREÇÃO 1: Importe isto
 import { ApiService } from '../../../core/services/api/api.service';
 import { OrderItemsComponent } from './dialogs/order-items/order-items.component';
+import { UpperCasePipe, DecimalPipe } from '@angular/common';
+
 
 // --- DIALOG: DETALHES DO PEDIDO (ITENS) ---
 @Component({
   selector: 'dialog-order-items',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule],
+  imports: [MatButtonModule, MatDialogModule],
   template: `
     <h2 mat-dialog-title>Pedido #{{ data.order.idOrder }} - Mesa {{ data.order.deskNumber }}</h2>
     <mat-dialog-content>
-      <div *ngIf="loading">Carregando itens...</div>
-      
-      <ul *ngIf="!loading" style="list-style: none; padding: 0;">
-        <li *ngFor="let item of items" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem;">
-            <span>{{ item.amount }}x {{ item.name }}</span>
-          </div>
-          
-          <div *ngIf="item.observation" style="color: red; font-size: 0.9rem; margin-top: 5px;">
-            ⚠️ Obs: {{ item.observation }}
-          </div>
-          
-          <div *ngIf="item.custom" style="color: #666; font-size: 0.9rem; margin-top: 5px;">
-            <div *ngFor="let opt of getCustomKeys(item.custom)">
-               • {{ opt }}: {{ item.custom[opt] }}
-            </div>
-          </div>
-        </li>
-      </ul>
+      @if (loading) {
+        <div>Carregando itens...</div>
+      }
+    
+      @if (!loading) {
+        <ul style="list-style: none; padding: 0;">
+          @for (item of items; track item) {
+            <li style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem;">
+                <span>{{ item.amount }}x {{ item.name }}</span>
+              </div>
+              @if (item.observation) {
+                <div style="color: red; font-size: 0.9rem; margin-top: 5px;">
+                  ⚠️ Obs: {{ item.observation }}
+                </div>
+              }
+              @if (item.custom) {
+                <div style="color: #666; font-size: 0.9rem; margin-top: 5px;">
+                  @for (opt of getCustomKeys(item.custom); track opt) {
+                    <div>
+                      • {{ opt }}: {{ item.custom[opt] }}
+                    </div>
+                  }
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-raised-button color="primary" mat-dialog-close>Fechar</button>
     </mat-dialog-actions>
-  `
+    `
 })
 export class OrderItemsDialog implements OnInit {
   api = inject(ApiService);
@@ -65,13 +77,14 @@ export class OrderItemsDialog implements OnInit {
   selector: 'app-kitchen',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatCardModule, 
-    MatButtonModule, 
-    MatChipsModule, 
+    UpperCasePipe,
+    DecimalPipe,
+    MatCardModule,
+    MatButtonModule,
+    MatChipsModule,
     MatIconModule,
-    MatDividerModule // <--- CORREÇÃO 2: Adicione isto na lista
-  ],
+    MatDividerModule
+],
   templateUrl: './kitchen.component.html',
   styleUrl: './kitchen.component.scss'
 })

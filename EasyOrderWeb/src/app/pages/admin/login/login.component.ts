@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -12,13 +12,12 @@ import { AuthService } from '../../../core/services/auth/auth.service';
   selector: 'app-admin-login',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    MatCardModule, 
+    FormsModule,
+    MatCardModule,
     MatInputModule,
-    MatButtonModule, 
+    MatButtonModule,
     MatSnackBarModule
-  ],
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

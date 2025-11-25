@@ -5,26 +5,29 @@
 
   <div class="content">
     <mat-list>
-      <div *ngIf="orders.length === 0" class="empty">
-        <mat-icon class="empty-icon">receipt_long</mat-icon>
-        <p>Você ainda não fez pedidos.</p>
-      </div>
+      @if (orders.length === 0) {
+        <div class="empty">
+          <mat-icon class="empty-icon">receipt_long</mat-icon>
+          <p>Você ainda não fez pedidos.</p>
+        </div>
+      }
 
-      <mat-list-item *ngFor="let order of orders" class="order-item">
-        <mat-icon matListItemIcon>restaurant</mat-icon>
-        <span matListItemTitle>Pedido #{{ order.idOrder }}</span>
-        <span matListItemLine>
-          Mesa {{ order.deskNumber }} • R$ {{ order.total | number:'1.2-2' }}
-        </span>
-        
-        <span matListItemMeta 
-              [style.color]="getStatusColor(order.status)" 
-              style="font-weight: bold; font-size: 0.8rem;">
-          {{ order.status | uppercase }}
-        </span>
-      </mat-list-item>
+      @for (order of orders; track order) {
+        <mat-list-item class="order-item">
+          <mat-icon matListItemIcon>restaurant</mat-icon>
+          <span matListItemTitle>Pedido #{{ order.idOrder }}</span>
+          <span matListItemLine>
+            Mesa {{ order.deskNumber }} • R$ {{ order.total | number:'1.2-2' }}
+          </span>
+          <span matListItemMeta
+            [style.color]="getStatusColor(order.status)"
+            style="font-weight: bold; font-size: 0.8rem;">
+            {{ order.status | uppercase }}
+          </span>
+        </mat-list-item>
+      }
     </mat-list>
-    
+
     <div class="actions">
       <button mat-stroked-button color="warn" (click)="logout()" style="width: 100%;">
         Sair da Conta

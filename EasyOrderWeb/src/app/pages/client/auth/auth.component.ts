@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -13,7 +13,7 @@ import { CartService } from '../../../core/services/cart/cart.service';
 @Component({
   selector: 'app-client-auth',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTabsModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [FormsModule, MatTabsModule, MatInputModule, MatButtonModule, MatIconModule],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
 })

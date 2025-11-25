@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'; // Para m
 import { ApiService } from '../../../core/services/api/api.service';
 import { StorageService } from '../../../core/services/storage/storage.service';
 import { MenuItem } from '../../../core/models/interfaces';
+import { UpperCasePipe, DecimalPipe } from '@angular/common';
 
 // =========================================================
 // 1. SUB-COMPONENTE: DIALOG (Formulário de Criar/Editar)
@@ -24,27 +25,26 @@ import { MenuItem } from '../../../core/models/interfaces';
   selector: 'dialog-menu-form',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    MatButtonModule, 
-    MatInputModule, 
-    MatFormFieldModule, 
-    MatDialogModule, 
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDialogModule,
     MatSelectModule,
     MatIconModule,
     MatProgressBarModule
-  ],
+],
   template: `
     <h2 mat-dialog-title>{{ isEdit ? 'Editar' : 'Novo' }} Prato</h2>
     
     <mat-dialog-content>
       <div class="form-container">
-        
+    
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Nome do Prato</mat-label>
           <input matInput [(ngModel)]="data.name" required>
         </mat-form-field>
-
+    
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Categoria</mat-label>
           <mat-select [(ngModel)]="data.category" required>
@@ -55,67 +55,69 @@ import { MenuItem } from '../../../core/models/interfaces';
             <mat-option value="Outros">Outros</mat-option>
           </mat-select>
         </mat-form-field>
-
+    
         <div class="row-inputs">
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Preço Venda (R$)</mat-label>
             <input matInput type="number" [(ngModel)]="data.price" required min="0">
           </mat-form-field>
-          
+    
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Custo (R$)</mat-label>
             <input matInput type="number" [(ngModel)]="data.cost" min="0">
           </mat-form-field>
         </div>
-
+    
         <div class="row-inputs align-center">
-           <mat-form-field appearance="outline" class="half-width">
+          <mat-form-field appearance="outline" class="half-width">
             <mat-label>Tempo (min)</mat-label>
             <input matInput type="number" [(ngModel)]="data.timePreparation">
           </mat-form-field>
-          
+    
           <div class="toggle-wrapper">
             <mat-slide-toggle [(ngModel)]="data.emphasis" color="accent">Destacar 🔥</mat-slide-toggle>
           </div>
         </div>
-
+    
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Descrição</mat-label>
           <textarea matInput [(ngModel)]="data.description" rows="3" placeholder="Ingredientes..."></textarea>
         </mat-form-field>
-
+    
         <div class="upload-section">
           <div class="upload-header">
             <label>Imagem</label>
           </div>
-          
+    
           <div class="upload-row">
-            <img [src]="data.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'" 
-                 class="img-preview" 
-                 onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'">
-            
-            <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" accept="image/*">
-            
-            <button mat-stroked-button type="button" (click)="fileInput.click()" [disabled]="uploading">
-              <mat-icon>cloud_upload</mat-icon> {{ uploading ? 'Enviando...' : 'Escolher Foto' }}
-            </button>
+            <img [src]="data.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'"
+              class="img-preview"
+              onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'">
+    
+              <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" accept="image/*">
+    
+              <button mat-stroked-button type="button" (click)="fileInput.click()" [disabled]="uploading">
+                <mat-icon>cloud_upload</mat-icon> {{ uploading ? 'Enviando...' : 'Escolher Foto' }}
+              </button>
+            </div>
+    
+            @if (uploading) {
+              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            }
           </div>
-          
-          <mat-progress-bar *ngIf="uploading" mode="indeterminate"></mat-progress-bar>
+    
         </div>
-
-      </div>
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-raised-button color="primary" 
-              [mat-dialog-close]="data" 
-              [disabled]="!data.name || !data.price || uploading">
+      </mat-dialog-content>
+    
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancelar</button>
+        <button mat-raised-button color="primary"
+          [mat-dialog-close]="data"
+          [disabled]="!data.name || !data.price || uploading">
         Salvar
       </button>
     </mat-dialog-actions>
-  `,
+    `,
   styles: [`
     .form-container { display: flex; flex-direction: column; gap: 8px; min-width: 350px; padding-top: 10px; }
     .full-width { width: 100%; }
@@ -130,7 +132,7 @@ import { MenuItem } from '../../../core/models/interfaces';
 })
 export class MenuFormDialog {
   inputData = inject(MAT_DIALOG_DATA);
-  storage = inject(StorageService); // <--- AQUI ENTRA O SEU STORAGE
+  storage = inject(StorageService); 
   snack = inject(MatSnackBar);
 
   data: any = { active: true, category: 'Lanches' };
@@ -177,15 +179,15 @@ export class MenuFormDialog {
   selector: 'app-menu-manager',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatTableModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatSlideToggleModule, 
-    MatDialogModule, 
-    MatSnackBarModule, 
+    DecimalPipe,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatDialogModule,
+    MatSnackBarModule,
     MatTooltipModule
-  ],
+],
   templateUrl: './menu-manager.component.html',
   styleUrl: './menu-manager.component.scss'
 })

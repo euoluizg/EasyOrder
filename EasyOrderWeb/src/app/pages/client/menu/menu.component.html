@@ -1,55 +1,56 @@
 <div class="mobile-layout">
-  
+
   <mat-toolbar color="primary" class="sticky-top">
-  
+
     <span>Mesa {{ realDeskNumber || '...' }}</span>
-    
+
     <span class="spacer"></span>
-    <button mat-icon-button routerLink="/client/profile"><mat-icon>history</mat-icon></button> 
+    <button mat-icon-button routerLink="/client/profile"><mat-icon>history</mat-icon></button>
   </mat-toolbar>
 
   <div class="menu-content">
-    
+
     <div class="welcome-banner">
       <h1>Olá! 👋</h1>
       <p>Escolha seu pedido abaixo</p>
     </div>
 
-    <div *ngFor="let section of menuSections" class="category-section">
-      <h3 class="category-title">{{ section.name }}</h3>
-
-      <div class="items-list">
-        <div class="menu-item" *ngFor="let item of section.items" matRipple (click)="openItem(item)">
-          
-          <div class="text-content">
-            <h4 class="item-name">{{ item.name }}</h4>
-            <p class="item-desc">{{ item.description }}</p>
-            <span class="item-price">R$ {{ item.price | number:'1.2-2' }}</span>
-          </div>
-
-          <div class="image-content">
-            <img [src]="item.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'" 
-              class="item-thumb" 
-              onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'"
-              alt="Foto">
-          </div>
-
+    @for (section of menuSections; track section) {
+      <div class="category-section">
+        <h3 class="category-title">{{ section.name }}</h3>
+        <div class="items-list">
+          @for (item of section.items; track item) {
+            <div class="menu-item" matRipple (click)="openItem(item)">
+              <div class="text-content">
+                <h4 class="item-name">{{ item.name }}</h4>
+                <p class="item-desc">{{ item.description }}</p>
+                <span class="item-price">R$ {{ item.price | number:'1.2-2' }}</span>
+              </div>
+              <div class="image-content">
+                <img [src]="item.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'"
+                  class="item-thumb"
+                  onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'"
+                  alt="Foto">
+              </div>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
 
   </div>
 
-  <div class="cart-bar" *ngIf="(cart.cart$ | async)?.length as count">
-    <div class="cart-info">
-      <div class="badge">{{ count }}</div>
-      <span class="total-label">Total: <strong>R$ {{ getTotal() | number:'1.2-2' }}</strong></span>
+  @if ((cart.cart$ | async)?.length; as count) {
+    <div class="cart-bar">
+      <div class="cart-info">
+        <div class="badge">{{ count }}</div>
+        <span class="total-label">Total: <strong>R$ {{ getTotal() | number:'1.2-2' }}</strong></span>
+      </div>
+      <button mat-raised-button color="accent" (click)="goToCheckout()">
+        VER SACOLA
+        <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+      </button>
     </div>
-
-    <button mat-raised-button color="accent" (click)="goToCheckout()">
-      VER SACOLA
-      <mat-icon iconPositionEnd>arrow_forward</mat-icon>
-    </button>
-  </div>
+  }
 
 </div>

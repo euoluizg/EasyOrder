@@ -1,16 +1,17 @@
 <div class="header">
   <h1>Gerenciar Equipe</h1>
-  
-  <button mat-raised-button color="primary" 
-          *ngIf="auth.hasRole(['dono', 'gerente'])"
-          (click)="openUserDialog()">
-    <mat-icon>person_add</mat-icon> Novo Funcionário
-  </button>
+
+  @if (auth.hasRole(['dono', 'gerente'])) {
+    <button mat-raised-button color="primary"
+      (click)="openUserDialog()">
+      <mat-icon>person_add</mat-icon> Novo Funcionário
+    </button>
+  }
 </div>
 
 <div class="table-container mat-elevation-z2">
   <table mat-table [dataSource]="users">
-    
+
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> Nome </th>
       <td mat-cell *matCellDef="let user"> {{user.name}} </td>
@@ -40,20 +41,22 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
       <td mat-cell *matCellDef="let user">
-        
-        <button mat-icon-button color="primary" 
-                *ngIf="auth.canEditUser(user)" 
-                (click)="openUserDialog(user)"
-                matTooltip="Editar">
-          <mat-icon>edit</mat-icon>
-        </button>
-        
-        <button mat-icon-button color="warn" 
-                *ngIf="auth.hasRole(['dono']) && user.idUser !== auth.getCurrentUser()?.id"
-                (click)="deleteUser(user.idUser)"
-                matTooltip="Deletar">
-          <mat-icon>delete</mat-icon>
-        </button>
+
+        @if (auth.canEditUser(user)) {
+          <button mat-icon-button color="primary"
+            (click)="openUserDialog(user)"
+            matTooltip="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+
+        @if (auth.hasRole(['dono']) && user.idUser !== auth.getCurrentUser()?.id) {
+          <button mat-icon-button color="warn"
+            (click)="deleteUser(user.idUser)"
+            matTooltip="Deletar">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
 
       </td>
     </ng-container>

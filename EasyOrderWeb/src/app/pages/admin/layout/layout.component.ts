@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common'; // Importante para *ngIf
+ // Importante para *ngIf
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -13,15 +13,14 @@ import { AuthService } from '../../../core/services/auth/auth.service';
   selector: 'app-layout',
   standalone: true,
   imports: [
-    CommonModule,
-    RouterModule, 
-    MatSidenavModule, 
-    MatListModule, 
-    MatToolbarModule, 
-    MatIconModule, 
+    RouterModule,
+    MatSidenavModule,
+    MatListModule,
+    MatToolbarModule,
+    MatIconModule,
     MatButtonModule,
     MatMenuModule
-  ],
+],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,20 +11,20 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ApiService } from '../../../core/services/api/api.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { UpperCasePipe, DecimalPipe } from '@angular/common';
 
 // --- DIALOG CRIAR USUÁRIO ---
 @Component({
   selector: 'dialog-user-form',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    MatButtonModule, 
-    MatInputModule, 
-    MatFormFieldModule, 
-    MatDialogModule, 
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDialogModule,
     MatSelectModule
-  ],
+],
   template: `
     <h2 mat-dialog-title>Novo Funcionário</h2>
     <mat-dialog-content>
@@ -74,13 +74,13 @@ export class UserFormDialog {
   selector: 'app-user-manager',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatTableModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatChipsModule, 
+    UpperCasePipe,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
     MatDialogModule
-  ],
+],
   templateUrl: './user-manager.component.html',
   styleUrl: './user-manager.component.scss'
 })

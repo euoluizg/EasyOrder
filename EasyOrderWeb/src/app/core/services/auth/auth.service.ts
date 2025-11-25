@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// Verifique se o caminho está correto. Padrão Angular é environment.ts
 import { environment } from '../../../../environments/environments'; 
 import { retry, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';

@@ -11,10 +11,10 @@
     <ng-container matColumnDef="image">
       <th mat-header-cell *matHeaderCellDef> Foto </th>
       <td mat-cell *matCellDef="let item">
-        <img [src]="item.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'" 
-             class="item-thumb" 
-             onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'"
-             alt="Prato">
+        <img [src]="item.imagePath || 'https://placehold.co/100x100?text=Sem+Foto'"
+          class="item-thumb"
+          onerror="this.src='https://placehold.co/100x100?text=Sem+Foto'"
+          alt="Prato">
       </td>
     </ng-container>
 
@@ -23,10 +23,12 @@
       <td mat-cell *matCellDef="let item">
         <div class="info-cell">
           <span class="name">{{ item.name }}</span>
-          
+
           <div class="badges">
-             <span class="category-badge">{{ item.category || 'Geral' }}</span>
-             <span class="highlight-badge" *ngIf="item.emphasis">🔥 Destaque</span>
+            <span class="category-badge">{{ item.category || 'Geral' }}</span>
+            @if (item.emphasis) {
+              <span class="highlight-badge">🔥 Destaque</span>
+            }
           </div>
 
           <small class="desc">{{ item.description }}</small>
@@ -44,9 +46,9 @@
     <ng-container matColumnDef="active">
       <th mat-header-cell *matHeaderCellDef> Status </th>
       <td mat-cell *matCellDef="let item">
-        <mat-slide-toggle 
-          [checked]="item.active" 
-          (change)="toggleStatus(item)" 
+        <mat-slide-toggle
+          [checked]="item.active"
+          (change)="toggleStatus(item)"
           color="primary"
           matTooltip="Ativar/Pausar Vendas">
         </mat-slide-toggle>

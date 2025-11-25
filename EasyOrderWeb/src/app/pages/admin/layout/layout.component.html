@@ -1,41 +1,49 @@
 <mat-sidenav-container class="layout-container">
-  
+
   <mat-sidenav mode="side" opened class="sidenav">
-    
+
     <div class="sidenav-header">
       <mat-icon class="logo-icon">restaurant</mat-icon>
       <span class="logo-text">EasyOrder</span>
     </div>
-    
+
     <mat-nav-list>
-      <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active-link" 
-         *ngIf="auth.hasRole(['dono', 'gerente'])">
-        <mat-icon matListItemIcon>dashboard</mat-icon>
-        <span matListItemTitle>Dashboard</span>
-      </a>
+      @if (auth.hasRole(['dono', 'gerente'])) {
+        <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active-link"
+          >
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+      }
 
       <a mat-list-item routerLink="/admin/kitchen" routerLinkActive="active-link">
         <mat-icon matListItemIcon>soup_kitchen</mat-icon>
         <span matListItemTitle>Cozinha / Pedidos</span>
       </a>
 
-      <a mat-list-item routerLink="/admin/menu-manager" routerLinkActive="active-link"
-         *ngIf="auth.hasRole(['dono', 'gerente'])">
-        <mat-icon matListItemIcon>menu_book</mat-icon>
-        <span matListItemTitle>Cardápio</span>
-      </a>
-      
-      <a mat-list-item routerLink="/admin/desks" routerLinkActive="active-link"
-         *ngIf="auth.hasRole(['dono', 'gerente', 'garcom'])">
-        <mat-icon matListItemIcon>table_restaurant</mat-icon>
-        <span matListItemTitle>Mesas / QR Code</span>
-      </a>
-      
-      <a mat-list-item routerLink="/admin/users" routerLinkActive="active-link"
-         *ngIf="auth.hasRole(['dono', 'gerente'])">
-        <mat-icon matListItemIcon>groups</mat-icon>
-        <span matListItemTitle>Equipe</span>
-      </a>
+      @if (auth.hasRole(['dono', 'gerente'])) {
+        <a mat-list-item routerLink="/admin/menu-manager" routerLinkActive="active-link"
+          >
+          <mat-icon matListItemIcon>menu_book</mat-icon>
+          <span matListItemTitle>Cardápio</span>
+        </a>
+      }
+
+      @if (auth.hasRole(['dono', 'gerente', 'garcom'])) {
+        <a mat-list-item routerLink="/admin/desks" routerLinkActive="active-link"
+          >
+          <mat-icon matListItemIcon>table_restaurant</mat-icon>
+          <span matListItemTitle>Mesas / QR Code</span>
+        </a>
+      }
+
+      @if (auth.hasRole(['dono', 'gerente'])) {
+        <a mat-list-item routerLink="/admin/users" routerLinkActive="active-link"
+          >
+          <mat-icon matListItemIcon>groups</mat-icon>
+          <span matListItemTitle>Equipe</span>
+        </a>
+      }
 
       <mat-divider></mat-divider>
 
@@ -47,18 +55,18 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    
+
     <mat-toolbar color="primary" class="main-toolbar">
       <span>Painel Administrativo</span>
       <span class="spacer"></span>
-      
+
       <div class="user-info">
         <span>Olá, <strong>{{ userName }}</strong></span>
         <button mat-icon-button [matMenuTriggerFor]="userMenu">
           <mat-icon>account_circle</mat-icon>
         </button>
       </div>
-      
+
       <mat-menu #userMenu="matMenu">
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
@@ -66,7 +74,7 @@
         </button>
       </mat-menu>
     </mat-toolbar>
-    
+
     <div class="page-content">
       <router-outlet></router-outlet>
     </div>

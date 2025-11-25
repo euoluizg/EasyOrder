@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ApiService } from '../../../core/services/api/api.service';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { DecimalPipe, UpperCasePipe } from '@angular/common';
 
 
 // --- DIALOG DE CRIAR MESA ---
@@ -18,13 +19,12 @@ import { QRCodeComponent } from 'angularx-qrcode';
   selector: 'dialog-create-desk',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    MatButtonModule, 
-    MatInputModule, 
-    MatFormFieldModule, 
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
     MatDialogModule
-  ],
+],
   template: `
     <h2 mat-dialog-title>Nova Mesa</h2>
     <mat-dialog-content>
@@ -46,11 +46,10 @@ export class CreateDeskDialog { data: any = {}; }
   selector: 'dialog-qr-view',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatButtonModule, 
+    MatButtonModule,
     MatDialogModule,
     QRCodeComponent
-  ],
+],
   template: `
     <h2 mat-dialog-title>Mesa {{ data.deskNumber }}</h2>
     
@@ -112,14 +111,14 @@ export class QrViewDialog {
   selector: 'app-desk-manager',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatCardModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatMenuModule, 
-    MatDialogModule, 
+    UpperCasePipe,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDialogModule,
     MatSnackBarModule
-  ],
+],
   templateUrl: './desk-manager.component.html',
   styleUrl: './desk-manager.component.scss'
 })
