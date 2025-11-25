@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..services import ordersServices
 from ..utils.decorators import roleRequired 
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 
 bp = Blueprint('ordersRoutes', __name__)
 
@@ -63,4 +63,14 @@ def getMyHistoryRoute():
     
     # Chama o serviço passando esse ID
     response, statusCode = ordersServices.getClientOrders(current_user_id)
+    return jsonify(response), statusCode
+
+@bp.route('/getDetail/<int:orderId>', methods=['GET'])
+@jwt_required() 
+def getOrderDetailsRoute(orderId):
+    claims = get_jwt()
+    userType = claims.get('type')
+    userId = get_jwt_identity()
+
+    response, statusCode = ordersServices.getOrderDetails(orderId, userId, userType)
     return jsonify(response), statusCode

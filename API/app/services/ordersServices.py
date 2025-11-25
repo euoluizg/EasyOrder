@@ -248,3 +248,70 @@ def getClientOrders(clientId):
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
+
+def getOrderDetails(idOrder, idUser, userType):
+    # Service: Busca os detalhes completos de um pedido (Cabeçalho + Itens).
+    # Inclui verificação de segurança para garantir que um cliente só veja o SEU pedido.
+    
+    
+    conn = createConnection()
+    if conn is None: return {"error": "Database connection failed."}, 500
+    
+    cursor = None
+
+    try:
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # 1. Busca o pedido principal
+        queryOrder = "SELECT * FROM orders WHERE idOrder = %s;"
+        cursor.execute(queryOrder, (idOrder,))
+        orderRaw = cursor.fetchone()
+
+        if orderRaw is None:
+            return {"error": "Pedido não encontrado."}, 404
+        
+        # Converte para dicionário para podermos adicionar campos
+        orderDetails = dict(orderRaw)
+        
+        # Permite se for Staff (Admin/Cozinha)
+        isAdminStaff = userType in ['dono', 'gerente', 'garcom', 'cozinha']
+        
+        # Permite se for o Dono do Pedido (Cliente)
+        isOwner = (userType == 'client' and orderDetails['idclient'] == int(idUser))
+
+        if not (isAdminStaff or isOwner):
+            return {"error": "Acesso negado a este pedido"}, 403
+        
+        # 2. Busca os itens desse pedido
+        queryItems = """
+            SELECT oi.idOrderItem, oi.amount, oi.unitPrice, oi.custom, oi.observation, mi.name 
+            FROM orderItems oi
+            JOIN menuItems mi ON oi.idItem = mi.idItem
+            WHERE oi.idOrder = %s;
+        """
+        cursor.execute(queryItems, (idOrder,))
+
+        itemsList = []
+        for item in cursor.fetchall():
+            i = dict(item)
+            # Converte decimal para float
+            i['unitPrice'] = float(i['unitprice']) if 'unitprice' in i else float(i['unitPrice'])
+            itemsList.append(i)
+
+        # 3. Formata a resposta final
+        orderDetails['total'] = float(orderDetails['total'])
+        
+        # Converte datas para string ISO (para o JSON não quebrar)
+        if orderDetails.get('timedate'):
+             orderDetails['timeDate'] = orderDetails['timedate'].isoformat()
+             
+        orderDetails['items'] = itemsList
+        
+        return orderDetails, 200
+
+    except Exception as e:
+        print(f"Erro ao buscar detalhes do pedido: {e}")
+        return {"error": str(e)}, 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
