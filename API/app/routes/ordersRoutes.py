@@ -74,3 +74,10 @@ def getOrderDetailsRoute(orderId):
 
     response, statusCode = ordersServices.getOrderDetails(orderId, userId, userType)
     return jsonify(response), statusCode
+
+# Rota de Estatísticas (Só Dono e Gerente podem ver o dinheiro)
+@bp.route('/stats', methods=['GET'])
+@roleRequired('dono', 'gerente') 
+def getStatsRoute():
+    response, statusCode = ordersServices.getDashboardStats()
+    return jsonify(response), statusCode

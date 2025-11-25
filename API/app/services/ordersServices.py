@@ -314,3 +314,36 @@ def getOrderDetails(idOrder, idUser, userType):
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
+
+def getDashboardStats():
+    # Service: Calcula totais para o Dashboard (Admin).
+    conn = createConnection()
+    if conn is None: return {"error": "DB failed"}, 500
+    
+    cursor = None
+    try:
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        query = """
+            SELECT 
+                COUNT(*) as "totalOrders",
+                COALESCE(SUM(total), 0) as "totalRevenue"
+            FROM orders 
+            WHERE status != 'cancelado';
+        """
+        cursor.execute(query)
+        result = cursor.fetchone()
+        
+        stats = {
+            "totalOrders": result['totalOrders'],
+            "totalRevenue": float(result['totalRevenue'])
+        }
+        
+        return stats, 200
+
+    except Exception as e:
+        print(f"Erro stats: {e}")
+        return {"totalOrders": 0, "totalRevenue": 0}, 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
