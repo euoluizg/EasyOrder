@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..services import ordersServices
 from ..utils.decorators import roleRequired 
-from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 
 bp = Blueprint('ordersRoutes', __name__)
 
@@ -34,18 +34,18 @@ def getAllOrdersRoute():
     response, statusCode = ordersServices.getAllActiveOrders()
     return jsonify(response), statusCode
 
-@bp.route('/getDetail/<int:orderId>/items', methods=['GET'])
-@jwt_required('dono', 'gerente', 'cozinha', 'garcom') 
-def getOrderDetailsRoute(orderId): 
+@bp.route('/getById/<int:orderId>/items', methods=['GET'])
+@roleRequired('dono', 'gerente', 'cozinha', 'garcom') 
+def getOrderItemsByIdOrderRoute(orderId): 
     # Rota para um Cliente (dono) ou Admin ver os detalhes de UM pedido.
 
-    response, statusCode = ordersServices.getOrderDetails(orderId)
+    response, statusCode = ordersServices.getOrderItemsByIdOrder(orderId)
     return jsonify(response), statusCode
 
 @bp.route('/update/<int:orderId>/status', methods=['PATCH'])
 @roleRequired('dono', 'gerente', 'cozinha') 
 def updateOrderStatusRoute(orderId):
-    # # Rota para a Cozinha/Gerente atualizar o status de um pedido.
+    # Rota para a Cozinha/Gerente atualizar o status de um pedido.
     data = request.get_json()
     newStatus = data.get('status')
     
