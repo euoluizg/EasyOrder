@@ -46,30 +46,30 @@ def createNewOrder(idClient, idDesk, itemsList, observation=None, origin='app'):
                 "observation": item.get('observation') # Obs do item
             })
 
-            queryOrder = """
-            INSERT INTO orders (idClient, idDesk, total, observation, origin, status)
-            VALUES (%s, %s, %s, %s, %s, 'recebido')
-            RETURNING idOrder, status;
-            """
+        queryOrder = """
+        INSERT INTO orders (idClient, idDesk, total, observation, origin, status)
+        VALUES (%s, %s, %s, %s, %s, 'recebido')
+        RETURNING idOrder, status;
+        """
             
-            cursor.execute(queryOrder, (idClient, idDesk, totalPrice, observation, origin))
+        cursor.execute(queryOrder, (idClient, idDesk, totalPrice, observation, origin))
 
-            newOrder = cursor.fetchone()
-            newOrderId = newOrder['idorder']
+        newOrder = cursor.fetchone()
+        newOrderId = newOrder['idorder']
 
-            queryItems = """
-            INSERT INTO orderItems (idOrder, idItem, amount, unitPrice, custom, observation)
-            VALUES (%s, %s, %s, %s, %s, %s);
-            """
+        queryItems = """
+        INSERT INTO orderItems (idOrder, idItem, amount, unitPrice, custom, observation)
+        VALUES (%s, %s, %s, %s, %s, %s);
+        """
 
-            for item in processedItems:
-                customJson = json.dumps(item['custom']) if item['custom'] else None
+        for item in processedItems:
+            customJson = json.dumps(item['custom']) if item['custom'] else None
 
-                cursor.execute(queryItems, (
+            cursor.execute(queryItems, (
                     newOrderId,
-                item['idItem'],
-                item['amount'],
-                item['unitPrice'],
+            item['idItem'],
+            item['amount'],
+            item['unitPrice'],
                 customJson,
                 item.get('observation')
                 ))
@@ -145,7 +145,7 @@ def getAllActiveOrders():
         if conn: 
             conn.close()
 
-def getOrderDetails(idOrder, idUser, userType):
+def getOrderDetails(idOrder):
     # Service para buscar os detalhes de 1 pedido (com seus itens.)
 
     conn = createConnection()
@@ -156,40 +156,27 @@ def getOrderDetails(idOrder, idUser, userType):
 
     try:
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-        # 1. Busca o pedido principal
-        queryOrder = "SELECT * FROM orders WHERE idOrder = %s;"
-        cursor.execute(queryOrder, (idOrder,))
-        orderDetails = cursor.fetchone()
-
-        if orderDetails is None:
-            return {"error": "Pedido não encontrado."}, 404
         
-        # lógica de segurança
-        isAdminStaff = userType in ['dono', 'gerente', 'garcom', 'cozinha']
-        isOwner = (userType == 'client' and orderDetails['idclient'] == int(idUser))
-
-        if not (isAdminStaff or isOwner):
-            return {"error": "Acesso negado a este pedido"}, 403
-        
-        # 2. Busca os itens desse pedido
+        # Busca os itens desse pedido
         queryItems = """
-            SELECT oi.idOrderItem, oi.amount, oi.unitPrice, oi.custom, oi.observation, mi.name 
+            SELECT 
+                oi.amount, 
+                oi.observation, 
+                oi.custom, 
+                m.name,
+                m.price as "unitPrice"
             FROM orderItems oi
-            JOIN menuItems mi ON oi.idItem = mi.idItem
+            JOIN menuItems m ON oi.idItem = m.idItem
             WHERE oi.idOrder = %s;
         """
         cursor.execute(queryItems, (idOrder,))
-
-        itemsList = []
-        for item in cursor.fetchall():
-            item['unitprice'] = float(item['unitprice'])
-            itemsList.append(item)
-
-        orderDetails['total'] = float(orderDetails['total'])
-        orderDetails['items'] = itemsList
+        items = cursor.fetchall()
         
-        return orderDetails, 200
+        for item in items:
+            item['unitPrice'] = float(items['unitPrice'])
+
+        
+        return items, 200
 
     except Exception as e:
         print(f"Erro ao buscar detalhes do pedido: {e}")

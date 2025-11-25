@@ -30,19 +30,16 @@ def createOrderRoute():
 @bp.route('/getAll', methods=['GET'])
 @roleRequired('dono', 'gerente', 'cozinha', 'garcom') 
 def getAllOrdersRoute():
-    # # Rota para a equipa (Cozinha/Garçom) ver os pedidos ATIVOS.
+    # Rota para a equipa (Cozinha/Garçom) ver os pedidos ATIVOS.
     response, statusCode = ordersServices.getAllActiveOrders()
     return jsonify(response), statusCode
 
 @bp.route('/getDetail/<int:orderId>', methods=['GET'])
-@jwt_required() 
-def getOrderDetailsRoute(orderId):
-    # # Rota para um Cliente (dono) ou Admin ver os detalhes de UM pedido.
-    claims = get_jwt()
-    userType = claims.get('type')
-    userId = get_jwt_identity()
-    
-    response, statusCode = ordersServices.getOrderDetails(orderId, userId, userType)
+@jwt_required('dono', 'gerente', 'cozinha', 'garcom') 
+def getOrderDetailsRoute(orderId): 
+    # Rota para um Cliente (dono) ou Admin ver os detalhes de UM pedido.
+
+    response, statusCode = ordersServices.getOrderDetails(orderId)
     return jsonify(response), statusCode
 
 @bp.route('/update/<int:orderId>/status', methods=['PATCH'])
