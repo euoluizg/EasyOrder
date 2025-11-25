@@ -49,3 +49,9 @@ def deleteDesk(idDesk):
 
     response, statusCode = deskServices.deleteDesk(idDesk)
     return jsonify(response), statusCode
+
+@bp.route('/getInfo/<int:idDesk>/info', methods=['GET'])
+def getDeskInfoRoute(idDesk):
+    # Rota PÚBLICA (Sem @roleRequired) para o cliente saber onde está
+    response, statusCode = deskServices.getDeskInfo(idDesk)
+    return jsonify(response), statusCode
