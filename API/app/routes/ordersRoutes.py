@@ -34,7 +34,7 @@ def getAllOrdersRoute():
     response, statusCode = ordersServices.getAllActiveOrders()
     return jsonify(response), statusCode
 
-@bp.route('/getDetail/<int:orderId>', methods=['GET'])
+@bp.route('/getDetail/<int:orderId>/items', methods=['GET'])
 @jwt_required('dono', 'gerente', 'cozinha', 'garcom') 
 def getOrderDetailsRoute(orderId): 
     # Rota para um Cliente (dono) ou Admin ver os detalhes de UM pedido.
