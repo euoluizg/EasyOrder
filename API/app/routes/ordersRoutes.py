@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..services import ordersServices
 from ..utils.decorators import roleRequired 
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 bp = Blueprint('ordersRoutes', __name__)
 
@@ -53,4 +53,14 @@ def updateOrderStatusRoute(orderId):
         return jsonify({"error": "O campo 'status' é obrigatório"}), 400
         
     response, statusCode = ordersServices.updateOrderStatus(orderId, newStatus)
+    return jsonify(response), statusCode
+
+@bp.route('/my-history', methods=['GET'])
+@jwt_required()
+def getMyHistoryRoute():
+    # Pega o ID do cliente logado através do Token
+    current_user_id = get_jwt_identity()
+    
+    # Chama o serviço passando esse ID
+    response, statusCode = ordersServices.getClientOrders(current_user_id)
     return jsonify(response), statusCode
