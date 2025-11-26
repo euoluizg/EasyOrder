@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
-import { ApiService } from '../../../../../core/services/api/api.service'; // Ajuste os ../ se necessário
+import { ApiService } from '../../../../../core/services/api/api.service'; 
 
 @Component({
   selector: 'app-order-items',

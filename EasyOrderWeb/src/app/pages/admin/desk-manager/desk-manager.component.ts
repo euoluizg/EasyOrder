@@ -90,11 +90,9 @@ export class QrViewDialog {
   data = inject(MAT_DIALOG_DATA);
 
   // URL base do seu site 
-  baseUrl = 'https://euoluizg.github.io/EasyOrder'; 
+  baseUrl = 'https://euoluizg.github.io/EasyOrder/#'; 
 
   getQrData() {
-    // Se a mesa tiver um UID (criado pelo backend), usa ele. 
-    // Se não, usa o ID (menos seguro, mas funciona).
     const id = this.data.qrCodeUid || this.data.idDesk;
     return `${this.baseUrl}/menu/${id}`;
   }

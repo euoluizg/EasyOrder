@@ -74,7 +74,6 @@ export class ApiService {
   }
 
   deleteMenuItem(id: number) {
-    // Lembra? O Backend faz exclusão lógica (active = false)
     return this.http.delete(`${this.apiUrl}/menu/delete/${id}`);
   }
 

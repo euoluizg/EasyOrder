@@ -7,7 +7,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // --- DEBUG ---
   console.log('🕵️‍♂️ Interceptor rodando para:', req.url);
   console.log('🔑 Token encontrado?', !!token); // True ou False
-  // -------------
 
   if (token) {
     const cloned = req.clone({

@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider'; // <--- CORREÇÃO 1: Importe isto
+import { MatDividerModule } from '@angular/material/divider';
 import { ApiService } from '../../../core/services/api/api.service';
 import { OrderItemsComponent } from './dialogs/order-items/order-items.component';
 import { UpperCasePipe, DecimalPipe } from '@angular/common';
