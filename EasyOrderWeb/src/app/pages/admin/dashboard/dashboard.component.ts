@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core'; // Adicione OnDestroy
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +12,7 @@ import { ApiService } from '../../../core/services/api/api.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit, OnDestroy { // Implemente OnDestroy
+export class DashboardComponent implements OnInit, OnDestroy { 
   api = inject(ApiService);
   
   stats = { totalRevenue: 0, totalOrders: 0 };

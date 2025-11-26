@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build:gh": "ng build --base-href /EasyOrder/ && cp dist/easy-order-web/browser/index.html dist/easy-order-web/browser/404.html",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

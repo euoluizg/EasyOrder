@@ -28,7 +28,7 @@ def createDesk(deskNumber, capacity):
 
         conn.commit()
 
-        urlApp = f"http://melos.dev.br/easyorder/mesa?uid={qrCodeUid}"  # Exemplo de URL base do aplicativo
+        urlApp = f"http://melos.dev.br/easyorder/mesa?uid={qrCodeUid}" 
         qrCodeImage = generateQrBase64(urlApp)  # Gera o QR code em base64
 
         print("Mesa inserida com sucesso.")

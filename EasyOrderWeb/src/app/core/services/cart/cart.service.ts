@@ -24,7 +24,6 @@ export class CartService {
     return this.deskId || Number(localStorage.getItem('deskId'));
   }
 
-  // --- ATUALIZADO: Agora aceita 'custom' (opções do prato) ---
   addToCart(item: MenuItem, amount: number = 1, observation: string = '', custom: any = null) {
     const current = this.cartItems.value;
     
@@ -58,8 +57,6 @@ export class CartService {
     }
 
     const itemsPayload = this.cartItems.value.map(item => {
-      // --- A CORREÇÃO MÁGICA ESTÁ AQUI ---
-      // Tenta ler 'idItem' (CamelCase) OU 'iditem' (Minúsculo) OU 'idItem' (do objeto data)
       const realId = item.idItem || (item as any).iditem || (item as any).id;
 
       if (!realId) {
@@ -69,7 +66,7 @@ export class CartService {
       }
 
       return {
-        idItem: realId,      // Enviamos sempre como 'idItem' para o Python aceitar
+        idItem: realId,      
         amount: item.amount,
         observation: item.observation || '',
         custom: item.custom || null

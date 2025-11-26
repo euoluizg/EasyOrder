@@ -11,7 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressBarModule } from '@angular/material/progress-bar'; // Para mostrar upload
+import { MatProgressBarModule } from '@angular/material/progress-bar'; 
 
 import { ApiService } from '../../../core/services/api/api.service';
 import { StorageService } from '../../../core/services/storage/storage.service';
@@ -252,7 +252,7 @@ export class MenuManagerComponent implements OnInit {
         this.snack.open(msg, 'OK', { duration: 1500 });
       },
       error: () => {
-        item.active = !newStatus; // Reverte se der erro
+        item.active = !newStatus; 
         this.snack.open('Erro ao mudar status', 'Fechar');
       }
     });

@@ -54,7 +54,7 @@ export class AuthService {
     
     return {
       id: payload.sub, // 'sub' é o padrão JWT para o ID (identity)
-      type: payload.type // 'type' é o claim que adicionamos no backend
+      type: payload.type // 'type' é o claim que adicionada no backend
     };
   }
 

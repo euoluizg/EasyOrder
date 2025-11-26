@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
- // Importante para *ngIf
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,7 +27,6 @@ export class LayoutComponent {
   auth = inject(AuthService);
   router = inject(Router);
 
-  // Pega o nome do usuário para mostrar no topo (opcional)
   userName = '';
 
   constructor() {

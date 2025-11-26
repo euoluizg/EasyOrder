@@ -6,7 +6,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // IMPORTANTE: Tem que retornar TRUE para deixar passar
   if (authService.getToken()) {
     console.log('Guard: Token encontrado. Acesso permitido.');
     return true; 

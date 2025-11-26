@@ -2,10 +2,10 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button'; // Importe o botão
+import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../../core/services/api/api.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { Router } from '@angular/router'; // Para voltar ao menu
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-client-profile',

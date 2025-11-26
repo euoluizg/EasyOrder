@@ -71,7 +71,7 @@ export class MenuComponent implements OnInit {
       data: item,
       maxWidth: '100vw',
       width: '100%',
-      panelClass: 'full-screen-modal' // CSS Global opcional
+      panelClass: 'full-screen-modal'
     });
 
     ref.afterClosed().subscribe(result => {
@@ -110,7 +110,6 @@ export class MenuComponent implements OnInit {
       }
     } else {
       // CENÁRIO 2: NÃO ESTÁ LOGADO
-      // CORREÇÃO: Manda para o Login/Cadastro 
       this.router.navigate(['/client/auth']);
     }
   }
